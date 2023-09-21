@@ -28,7 +28,9 @@ let TelegramService = class TelegramService {
         };
         this.replyToNormalText = (msg) => {
             console.log(msg);
-            if (msg.text !== '/subscribe' && msg.text !== '/start' && msg.text !== '/unsubscribe') {
+            if (msg.text !== '/subscribe' &&
+                msg.text !== '/start' &&
+                msg.text !== '/unsubscribe') {
                 const chatId = msg.chat.id;
                 this.bot.sendMessage(chatId, 'Welcome to weather bot, use /subscribe to get daily updates on the weather 📣🔔');
             }
@@ -47,7 +49,13 @@ let TelegramService = class TelegramService {
             if (!user) {
                 const subscribe_user = await supabase_1.default
                     .from('subscribed-users')
-                    .insert([{ username: msg.chat.username, chatId: msg.chat.id, first_name: msg.chat.first_name }])
+                    .insert([
+                    {
+                        username: msg.chat.username,
+                        chatId: msg.chat.id,
+                        first_name: msg.chat.first_name,
+                    },
+                ])
                     .select();
                 if (subscribe_user.statusText === 'Created') {
                     this.bot.sendMessage(msg.chat.id, `Hi ${msg.chat.first_name}, you're now subscribed to daily weather report 🎉🎉`);
@@ -68,7 +76,9 @@ let TelegramService = class TelegramService {
                     .from('subscribed-users')
                     .delete()
                     .eq('chatId', msg.chat.id);
-                this.bot.sendMessage(msg.chat.id, `Hi ${msg.chat.first_name}, you're now unsubscribed 😱🥶`);
+                if (!error) {
+                    this.bot.sendMessage(msg.chat.id, `Hi ${msg.chat.first_name}, you're now unsubscribed 😱🥶`);
+                }
             }
         };
         this.bot = new TelegramBot('6109532890:AAEMaFX0ytE253gyY_lkvlmqKTaBnNseoQg', { polling: true });

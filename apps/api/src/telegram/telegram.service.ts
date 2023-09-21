@@ -44,7 +44,9 @@ export class TelegramService {
     chatIds.forEach((chatId) =>
       this.bot.sendMessage(
         chatId,
-        `Weather today - ${weatherData.data.weather[0].main} with ${(weatherData.data.main.temp - 273.15).toFixed(2)}°C ✨`,
+        `Weather today - ${weatherData.data.weather[0].main} with ${(
+          weatherData.data.main.temp - 273.15
+        ).toFixed(2)}°C ✨`,
         // C = K - 273.15
       ),
     );
@@ -55,8 +57,12 @@ export class TelegramService {
   };
 
   replyToNormalText = (msg: any) => {
-    console.log(msg)
-    if (msg.text !== '/subscribe' && msg.text !== '/start' && msg.text !== '/unsubscribe') {
+    console.log(msg);
+    if (
+      msg.text !== '/subscribe' &&
+      msg.text !== '/start' &&
+      msg.text !== '/unsubscribe'
+    ) {
       const chatId = msg.chat.id;
       this.bot.sendMessage(
         chatId,
@@ -84,7 +90,13 @@ export class TelegramService {
     if (!user) {
       const subscribe_user = await supabase
         .from('subscribed-users')
-        .insert([{ username: msg.chat.username, chatId: msg.chat.id, first_name: msg.chat.first_name }])
+        .insert([
+          {
+            username: msg.chat.username,
+            chatId: msg.chat.id,
+            first_name: msg.chat.first_name,
+          },
+        ])
         .select();
 
       if (subscribe_user.statusText === 'Created') {
@@ -111,14 +123,16 @@ export class TelegramService {
       );
     } else {
       const { error } = await supabase
-      .from('subscribed-users')
-      .delete()
-      .eq('chatId', msg.chat.id);
+        .from('subscribed-users')
+        .delete()
+        .eq('chatId', msg.chat.id);
 
-      this.bot.sendMessage(
-        msg.chat.id,
-        `Hi ${msg.chat.first_name}, you're now unsubscribed 😱🥶`,
-      );
+      if (!error) {
+        this.bot.sendMessage(
+          msg.chat.id,
+          `Hi ${msg.chat.first_name}, you're now unsubscribed 😱🥶`,
+        );
+      }
     }
   };
 }
