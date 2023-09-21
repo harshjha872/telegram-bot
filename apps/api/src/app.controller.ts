@@ -16,7 +16,7 @@ export class AppController {
   }
 
   @Post('delete_user')
-  deleteUser(@Body() chatIdObj: any ) {
+  deleteUser(@Body() chatIdObj: any) {
     return this.appService.deleteUser(chatIdObj.chatId);
   }
 }

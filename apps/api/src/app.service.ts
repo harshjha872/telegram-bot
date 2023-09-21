@@ -17,7 +17,7 @@ export class AppService {
       .from('subscribed-users')
       .delete()
       .eq('chatId', id);
-    
-      if(!error) return 'user deleted!';
+
+    if (!error) return 'user deleted!';
   }
 }
